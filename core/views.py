@@ -19,10 +19,17 @@ from isphishy import settings
 class IsPhishy(APIView):
     
     def predictClass(self, imageFilePath):
+        # Test Model
         model = keras.models.load_model(r"model//test_model.h5")
         img = cv2.imread(imageFilePath)
         resize = tf.image.resize(img, (256,256))
         yhat = model.predict(np.expand_dims(resize/255, 0))
+        
+        # Rohan's Model
+        # model = keras.models.load_model(r"model//model.h5")
+        # img = cv2.imread(imageFilePath)
+        # resize = tf.image.resize(img, (240,240))
+        # yhat = model.predict(np.expand_dims(resize/239, 0))
         
         if yhat > 0.5: 
             return 'Good URL'
@@ -52,6 +59,7 @@ class IsPhishy(APIView):
         index = int(time.time() * 1000000)
         if url is not None:
             predicted_class = self.createHTMLFile(index, url)
+            print(predicted_class)
             return Response(predicted_class, status = 200)
-        return Response("URL toh daal bhai", status = 200)
+        return Response("Pass a URL parameter with GET request", status = 200)
     
